@@ -13,7 +13,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::paginate();
+        return Product::with('category')->get();
     }
 
     /**
@@ -21,8 +21,17 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        $product = Product::create($request->all());
-        return response()->json(['product' => $product], Response::HTTP_CREATED);
+        $product = new Product;
+        $product->product_name = $request->input('product_name');
+        $product->product_description = $request->input('product_description');
+        $product->product_price = $request->input('product_price');
+        $product->product_stock = $request->input('product_stock');
+        $product->product_status = $request->input('product_status');
+        $product->barcode = $request->input('barcode');
+        $product->fk_category_product = $request->input('fk_category_product');
+        $product->save();
+
+        return $product->load('category');
     }
 
     /**
@@ -30,7 +39,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return response()->json(['product' => $product], Response::HTTP_OK);
+        return $product->load('category');
     }
 
     /**
@@ -38,8 +47,10 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
-        $product->update($request->all());
-        return response()->json(['product' => $product], Response::HTTP_OK);
+        if ($product->update($request->all())) {
+            return response()->json(['success' => true, 'product' => $product]);
+        }
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -47,7 +58,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        return response()->json(['product' => $product], Response::HTTP_ACCEPTED);
+        if ($product->delete()) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

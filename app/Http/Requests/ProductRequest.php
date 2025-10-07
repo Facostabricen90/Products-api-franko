@@ -51,6 +51,15 @@ class ProductRequest extends FormRequest
                 'required',
                 'boolean',
             ],
+            'barcode' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'fk_category_product' => [
+                'nullable',
+                'exists:categories,id',
+            ],
         ];
     }
 
@@ -64,6 +73,7 @@ class ProductRequest extends FormRequest
         return [
             'product_name.unique' => 'Ya existe un producto con este nombre.',
             'product_price.regex' => 'El formato del precio no es válido. Use solo números y hasta dos decimales.',
+            'fk_category_product.exists' => 'La categoría seleccionada no existe.',
         ];
     }
 

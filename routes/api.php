@@ -17,3 +17,9 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::get('/test', function () {
     return response()->json(['status' => 'API funciona!']);
 });
+
+Route::apiResource('categories', \App\Http\Controllers\CategoryController::class)
+                    ->middleware('auth:sanctum');
+
+Route::get('/active-categories', [\App\Http\Controllers\CategoryController::class, 'getActiveCategories'] )
+                    ->middleware('auth:sanctum');
