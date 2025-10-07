@@ -59,7 +59,7 @@ class CategoryController extends Controller
 
     public function getActiveCategories()
     {
-        $activeCategories = Category::where('status', true)
+        $activeCategories = Category::where('category_state', true)
                                     ->with('products')
                                     ->get();
 
